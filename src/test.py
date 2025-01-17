@@ -2,6 +2,7 @@ import uuid
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_huggingface import HuggingFacePipeline, ChatHuggingFace
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 # from quantize import quantization_8bit_config
 
 from dotenv import load_dotenv
@@ -13,22 +14,47 @@ load_dotenv()
 memory = MemorySaver()
 graph_builder = StateGraph(MessagesState)
 
-llm = HuggingFacePipeline.from_model_id(
-    model_id="microsoft/Phi-3-mini-4k-instruct",
-    task="text-generation",
-    device=0,
-    pipeline_kwargs={
-        "max_new_tokens": 1024,
-        "do_sample": True,
-        "repetition_penalty": 1.03,
-        "top_k": 50,
-        "temperature": 0.55,
-        "return_full_text": False
-    },
-    # model_kwargs={
-    #     "quantization_config": quantization_8bit_config
-    # }
+#----------------- for Phi3--------------------------------
+# llm = HuggingFacePipeline.from_model_id(
+#     model_id="microsoft/Phi-3.5-mini-instruct",
+#     # model_id="microsoft/Phi-3-mini-4k-instruct",
+#     task="text-generation",
+#     device=0,
+#     pipeline_kwargs={
+#         "max_new_tokens": 1024,
+#         "do_sample": True,
+#         "repetition_penalty": 1.03,
+#         "top_k": 50,
+#         "temperature": 0.55,
+#         "return_full_text": False
+#     },
+#     # model_kwargs={
+#     #     "quantization_config": quantization_8bit_config
+#     # }
+# )
+#----------------- End Phi3--------------------------------
+
+#----------------- for Phi3.5--------------------------------
+model = AutoModelForCausalLM.from_pretrained(
+    "microsoft/Phi-3.5-mini-instruct", 
+    device_map="cuda", 
+    torch_dtype="auto", 
+    trust_remote_code=True, 
 )
+tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3.5-mini-instruct")
+pipe = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    max_new_tokens=1024,
+    repetition_penalty=1.05,
+    do_sample=True,
+    temperature=0.55,
+    return_full_text=False
+)
+llm = HuggingFacePipeline(pipeline=pipe)
+#----------------- End Phi3.5--------------------------------
+
 llm = ChatHuggingFace(llm=llm)
 
 

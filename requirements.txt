@@ -5,3 +5,4 @@ tiktoken==0.8.0
 blobfile==3.0.0
 bitsandbytes==0.45.0
 accelerate==1.2.1
+flash-attn==2.7.3
