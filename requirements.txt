@@ -1,0 +1,7 @@
+langgraph==0.2.62
+python-dotenv==1.0.1
+langchain-huggingface==0.1.2
+tiktoken==0.8.0
+blobfile==3.0.0
+bitsandbytes==0.45.0
+accelerate==1.2.1
