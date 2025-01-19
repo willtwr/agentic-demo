@@ -1,10 +1,12 @@
 from .phi3_5 import Phi3_5
 from .phi3 import Phi3
+from .llama3_2 import llama3_2
 
 
 models = {
     "phi-3.5": Phi3_5,
-    "phi-3": Phi3
+    "phi-3": Phi3,
+    "llama-3.2": llama3_2
 }
 
 

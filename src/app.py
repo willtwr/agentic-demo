@@ -1,11 +1,18 @@
+# import os
 import uuid
+from dotenv import load_dotenv
 import gradio as gr
 
 from chat_graph import ChatGraph
 
 
+load_dotenv()
+# TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 config = {"configurable": {"thread_id": uuid.uuid4()}}
-chatgraph = ChatGraph()
+
+# Put models here so they are not loaded more than once.
+if gr.NO_RELOAD:    
+    chatgraph = ChatGraph()
 
 
 def stream_chat_graph_updates(chat_history: list):
@@ -26,4 +33,6 @@ with gr.Blocks() as demo:
     msg = gr.Textbox(placeholder="Type your message here...", submit_btn=True)
     msg.submit(stream_user_message, [msg, chat], [msg, chat], queue=False).then(stream_chat_graph_updates, chat, chat)
 
-demo.launch()
+
+if __name__ == "__main__":
+    demo.launch()

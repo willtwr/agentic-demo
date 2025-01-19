@@ -11,5 +11,8 @@ class ChatBot:
     def build_model(self, model_name="phi-3.5") -> None:
         self.chat_model = ChatHuggingFace(llm=llm_factory(model_name))
 
+    def bind_tools(self, tools: list):
+        self.chat_model.bind_tools(tools)
+
     def __call__(self, state: MessagesState):
         return {"messages": [self.chat_model.invoke(state["messages"])]}
