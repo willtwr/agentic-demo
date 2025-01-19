@@ -1,9 +1,14 @@
+from .base_llm import BaseLLM
+
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
-class Phi3_5Pipe:
+class Phi3_5Pipe(BaseLLM):
     def __init__(self):
+        self.build_pipe()
+
+    def build_pipe(self) -> None:
         model = AutoModelForCausalLM.from_pretrained(
             "microsoft/Phi-3.5-mini-instruct", 
             device_map="cuda", 
@@ -22,7 +27,7 @@ class Phi3_5Pipe:
             temperature=0.55,
             return_full_text=False
         )
-        self.phi_3_5_pipe = HuggingFacePipeline(pipeline=pipe)
+        self.phi3_5pipe = HuggingFacePipeline(pipeline=pipe)
 
     def get_pipe(self):
-        return self.phi_3_5_pipe
+        return self.phi3_5pipe

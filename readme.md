@@ -1,5 +1,5 @@
 # Agentic Demo
-Building portfolio for agentic framework.
+Agentic framework.
 
 # Installation
 * need to install cudatoolkit

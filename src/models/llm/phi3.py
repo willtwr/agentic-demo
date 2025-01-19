@@ -1,9 +1,14 @@
+from .base_llm import BaseLLM
+
 from langchain_huggingface import HuggingFacePipeline
 
 
-class Phi3Pipe:
+class Phi3Pipe(BaseLLM):
     def __init__(self):
-        self.phi_3_pipe = HuggingFacePipeline.from_model_id(
+        self.build_pipe()
+    
+    def build_pipe(self) -> None:
+        self.phi3_pipe = HuggingFacePipeline.from_model_id(
             model_id="microsoft/Phi-3-mini-4k-instruct",
             task="text-generation",
             device=0,
@@ -21,4 +26,4 @@ class Phi3Pipe:
         )
 
     def get_pipe(self):
-        return self.phi_3_pipe
+        return self.phi3_pipe
