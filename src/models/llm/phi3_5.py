@@ -4,7 +4,7 @@ from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
-class Phi3_5Pipe(BaseLLM):
+class Phi3_5(BaseLLM):
     def __init__(self):
         self.build_pipe()
 

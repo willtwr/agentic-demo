@@ -1,15 +1,16 @@
 import uuid
 import gradio as gr
 
-from chat_graph import chat_graph
+from chat_graph import ChatGraph
 
 
 config = {"configurable": {"thread_id": uuid.uuid4()}}
+chatgraph = ChatGraph()
 
 
 def stream_chat_graph_updates(chat_history: list):
     user_input = chat_history[-1]["content"]
-    for event in chat_graph.stream({"messages": [("user", user_input)]}, config, stream_mode="updates"):
+    for event in chatgraph().stream({"messages": [("user", user_input)]}, config, stream_mode="updates"):
         chat_history.append({"role": "assistant", "content": event["chatbot"]["messages"][-1].content})
         yield chat_history
 

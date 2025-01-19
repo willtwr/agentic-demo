@@ -1,10 +1,10 @@
-from .phi3_5 import Phi3_5Pipe
-from .phi3 import Phi3Pipe
+from .phi3_5 import Phi3_5
+from .phi3 import Phi3
 
 
 models = {
-    "phi-3.5": Phi3_5Pipe,
-    "phi-3": Phi3Pipe
+    "phi-3.5": Phi3_5,
+    "phi-3": Phi3
 }
 
 

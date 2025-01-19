@@ -3,7 +3,7 @@ from .base_llm import BaseLLM
 from langchain_huggingface import HuggingFacePipeline
 
 
-class Phi3Pipe(BaseLLM):
+class Phi3(BaseLLM):
     def __init__(self):
         self.build_pipe()
     
