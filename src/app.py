@@ -1,4 +1,3 @@
-# import os
 import uuid
 from dotenv import load_dotenv
 import gradio as gr
@@ -7,7 +6,6 @@ from chat_graph import ChatGraph
 
 
 load_dotenv()
-# TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 config = {"configurable": {"thread_id": uuid.uuid4()}}
 
 # Put models here so they are not loaded more than once.
@@ -16,9 +14,24 @@ if gr.NO_RELOAD:
 
 
 def stream_chat_graph_updates(chat_history: list):
+    messages = []
+    # if len(chat_history) == 1:
+    #     messages.append(("system", SYSTEM_PROMPT))
+    
     user_input = chat_history[-1]["content"]
-    for event in chatgraph().stream({"messages": [("user", user_input)]}, config, stream_mode="updates"):
-        chat_history.append({"role": "assistant", "content": event["chatbot"]["messages"][-1].content})
+    messages.append(("user", user_input))
+    for event in chatgraph().stream({"messages": messages}, config, stream_mode="updates"):
+        if "chatbot" in event:
+            message = event['chatbot']['messages'][-1]
+            chat_history.append({"role": "assistant", "content": message.content})
+        elif "tools" in event:
+            message = event['tools']['messages'][-1]
+        
+        if isinstance(message, tuple):
+            print(message)
+        else:
+            message.pretty_print()
+        
         yield chat_history
 
 
