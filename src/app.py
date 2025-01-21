@@ -2,7 +2,7 @@ import uuid
 from dotenv import load_dotenv
 import gradio as gr
 
-from chat_graph import ChatGraph
+from agents.chatbot.chatbot import ChatBot
 
 
 load_dotenv()
@@ -10,7 +10,7 @@ config = {"configurable": {"thread_id": uuid.uuid4()}}
 
 # Put models here so they are not loaded more than once.
 if gr.NO_RELOAD:    
-    chatgraph = ChatGraph()
+    chatbot = ChatBot(model_name="gemini")
 
 
 def stream_chat_graph_updates(chat_history: list):
@@ -20,7 +20,7 @@ def stream_chat_graph_updates(chat_history: list):
     
     user_input = chat_history[-1]["content"]
     messages.append(("user", user_input))
-    for event in chatgraph().stream({"messages": messages}, config, stream_mode="updates"):
+    for event in chatbot().stream({"messages": messages}, config, stream_mode="updates"):
         if "chatbot" in event:
             message = event['chatbot']['messages'][-1]
             chat_history.append({"role": "assistant", "content": message.content})
