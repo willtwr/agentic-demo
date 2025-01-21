@@ -3,6 +3,7 @@ from tools.weather import get_weather
 # from tools.math import add, multiply
 
 from langchain_core.language_models import BaseChatModel
+from langchain_core.messages import SystemMessage
 from langchain_huggingface import ChatHuggingFace
 from langgraph.graph import MessagesState, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
@@ -13,6 +14,9 @@ from langgraph.prebuilt import ToolNode, tools_condition
 class ChatBot:
     def __init__(self, model_name="phi-3.5"):
         self.model_name = model_name
+        with open("./src/agents/chatbot/system_prompt_name.txt", "r") as file:
+            self.sys_prompt = file.read()
+
         self.build_model()
         self.build_graph()
 
@@ -47,7 +51,8 @@ class ChatBot:
         self.model = self.model.bind_tools(tools)
 
     def invoke_model(self, state: MessagesState):
-        return {"messages": [self.model.invoke(state["messages"])]}
+        messages = [SystemMessage(self.sys_prompt)] + state["messages"]
+        return {"messages": [self.model.invoke(messages)]}
 
     def __call__(self):
         return self.graph
