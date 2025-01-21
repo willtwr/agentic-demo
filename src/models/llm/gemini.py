@@ -3,6 +3,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 class Gemini(BaseLLM):
+    """Google Gemini LLM model"""
     def __init__(self):
         self.build_pipe()
 

@@ -12,9 +12,12 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 
 class ChatBot:
+    """ChatBot Agent
+    Able to chat and use some tools.
+    """
     def __init__(self, 
-                 model_name="phi-3.5",
-                 sys_prompt_path="./src/agents/chatbot/system_prompt_name.txt"):
+                 model_name: str = "phi-3.5",
+                 sys_prompt_path: str = "./src/agents/chatbot/system_prompt_name.txt"):
         self.model_name = model_name
         with open(sys_prompt_path, "r") as file:
             self.sys_prompt = file.read()
@@ -23,6 +26,7 @@ class ChatBot:
         self.build_graph()
 
     def build_model(self) -> None:
+        """Build the LLM model"""
         llm = llm_factory(self.model_name)
         if not isinstance(llm, BaseChatModel):
             self.model = ChatHuggingFace(llm=llm)
@@ -30,6 +34,7 @@ class ChatBot:
             self.model = llm
 
     def build_graph(self) -> None:
+        """Build the graph of the agent"""
         memory = MemorySaver()
         graph_builder = StateGraph(MessagesState)
 
@@ -50,9 +55,11 @@ class ChatBot:
         self.graph = graph_builder.compile(checkpointer=memory)
 
     def bind_tools(self, tools: list):
+        """Bind tools for the agent to use"""
         self.model = self.model.bind_tools(tools)
 
     def invoke_model(self, state: MessagesState):
+        """Model invoke function"""
         messages = [SystemMessage(self.sys_prompt)] + state["messages"]
         return {"messages": [self.model.invoke(messages)]}
 

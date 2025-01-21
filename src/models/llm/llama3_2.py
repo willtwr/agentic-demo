@@ -6,6 +6,7 @@ from langchain_huggingface import HuggingFacePipeline
 
 
 class llama3_2(BaseLLM):
+    """LLama 3.2 model"""
     def __init__(self):
         self.build_pipe()
 

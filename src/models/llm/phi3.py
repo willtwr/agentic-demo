@@ -4,6 +4,7 @@ from langchain_huggingface import HuggingFacePipeline
 
 
 class Phi3(BaseLLM):
+    """Microsoft Phi 3 model"""
     def __init__(self):
         self.build_pipe()
     

@@ -5,6 +5,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
 class Phi3_5(BaseLLM):
+    """Microsoft Phi 3.5 model"""
     def __init__(self):
         self.build_pipe()
 
