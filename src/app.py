@@ -26,11 +26,7 @@ def stream_chat_graph_updates(chat_history: list):
             chat_history.append({"role": "assistant", "content": message.content})
         elif "tools" in event:
             message = event['tools']['messages'][-1]
-        
-        if isinstance(message, tuple):
-            print(message)
-        else:
-            message.pretty_print()
+            chat_history.append({"role": "assistant", "content": message.content, "metadata": {"title": f"🛠️ Used tool {message.name}"}})
         
         yield chat_history
 
