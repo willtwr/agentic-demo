@@ -12,9 +12,11 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 
 class ChatBot:
-    def __init__(self, model_name="phi-3.5"):
+    def __init__(self, 
+                 model_name="phi-3.5",
+                 sys_prompt_path="./src/agents/chatbot/system_prompt_name.txt"):
         self.model_name = model_name
-        with open("./src/agents/chatbot/system_prompt_name.txt", "r") as file:
+        with open(sys_prompt_path, "r") as file:
             self.sys_prompt = file.read()
 
         self.build_model()
