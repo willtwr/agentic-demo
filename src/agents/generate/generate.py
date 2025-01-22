@@ -2,7 +2,7 @@ from models.llm.llm_factory import llm_factory
 
 from langchain import hub
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import ChatHuggingFace
 
@@ -43,7 +43,13 @@ class GenerateAgent:
         """
         print("---GENERATE---")
         messages = state["messages"]
-        question = messages[-2].content
+        print(messages)
+        
+        for item in reversed(messages):
+            if isinstance(item, HumanMessage):
+                question = item.content
+                break
+        
         print("___Question___")
         print(question)
 

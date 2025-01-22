@@ -5,6 +5,7 @@ from models.llm.llm_factory import llm_factory
 from vector_store.chroma import ChromaVectorStore
 from tools.vector_store_retriever import build_retriever_tool
 from tools.weather import get_weather
+from tools.conditions.redirect import redirect_condition
 from agents.generate.generate import GenerateAgent
 
 from langchain_core.language_models import BaseChatModel
@@ -71,7 +72,8 @@ class ChatBot:
         
         graph_builder.set_entry_point("chatbot")
         graph_builder.add_conditional_edges("chatbot", tools_condition, {"tools": "tools", END: END})
-        graph_builder.add_edge("tools", "generate")
+        # graph_builder.add_edge("tools", "generate")
+        graph_builder.add_conditional_edges("tools", redirect_condition)
         graph_builder.add_edge("generate", END)
 
         self.graph = graph_builder.compile(checkpointer=memory)
