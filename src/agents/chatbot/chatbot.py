@@ -72,7 +72,6 @@ class ChatBot:
         
         graph_builder.set_entry_point("chatbot")
         graph_builder.add_conditional_edges("chatbot", tools_condition, {"tools": "tools", END: END})
-        # graph_builder.add_edge("tools", "generate")
         graph_builder.add_conditional_edges("tools", redirect_condition)
         graph_builder.add_edge("generate", END)
 
