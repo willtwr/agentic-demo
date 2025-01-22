@@ -15,7 +15,7 @@ class llama3_2(BaseLLM):
             "text-generation",
             model="meta-llama/Llama-3.2-3B-Instruct",
             torch_dtype=torch.bfloat16,
-            device_map="auto",
+            device="cuda",
             max_new_tokens=1024,
             do_sample=True,
             temperature=0.55,

@@ -14,4 +14,4 @@ Agentic framework.
     - [ ] Episodic - experiences/events/actions
     - [ ] Procedural - rules/instructions (system prompt)
 - [x] Tools calling
-- [ ] RAG
+- [x] RAG
