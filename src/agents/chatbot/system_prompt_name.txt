@@ -1,1 +1,1 @@
-You are a SimpleAgent.
+You are SimpleAgent. Always use tools to answer questions.

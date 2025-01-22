@@ -43,17 +43,20 @@ class GenerateAgent:
         """
         print("---GENERATE---")
         messages = state["messages"]
-        question = messages[0].content
+        question = messages[-2].content
+        print("___Question___")
+        print(question)
+
         last_message = messages[-1]
         docs = last_message.content
+        print("___Last Message___")
+        print(docs)
         
         # Chain
         rag_chain = self.prompt | self.model | StrOutputParser()
 
         # Run
         response = rag_chain.invoke({"context": docs, "question": question})
-        print("---response---")
-        print(response)
         return {"messages": [AIMessage(content=response)]}
     
     def __call__(self):
