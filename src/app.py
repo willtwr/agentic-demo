@@ -12,6 +12,7 @@ config = {"configurable": {"thread_id": uuid.uuid4()}}
 # Initialize models here so that they are not loaded more than once.
 if gr.NO_RELOAD:    
     chatbot = ChatBot(model_name="gemini")
+    # chatbot = ChatBot(model_name="deepseek")
 
     # Load some documents to vector store
     urls = [
