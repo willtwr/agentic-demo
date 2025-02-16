@@ -39,7 +39,7 @@ class GenerateAgent:
             state (messages): The current state
 
         Returns:
-            dict: The updated state with re-phrased question
+            dict: The updated state
         """
         print("---GENERATE---")
         messages = state["messages"]
@@ -65,5 +65,5 @@ class GenerateAgent:
         response = rag_chain.invoke({"context": docs, "question": question})
         return {"messages": [AIMessage(content=response)]}
     
-    def __call__(self):
-        return self.generate
+    def __call__(self, state):
+        return self.generate(state)

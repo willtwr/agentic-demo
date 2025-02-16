@@ -9,8 +9,8 @@ class Gemini(BaseLLM):
 
     def build_pipe(self) -> None:
         self.gemini_chat_model = ChatGoogleGenerativeAI(
-            # model="gemini-1.5-pro",
-            model="gemini-1.5-flash",
+            model="gemini-1.5-pro",
+            # model="gemini-1.5-flash",
             temperature=0.3,
             max_tokens=1024
         )

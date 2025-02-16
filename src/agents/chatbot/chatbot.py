@@ -1,15 +1,18 @@
 import io
+import json
+import uuid
 from PIL import Image
 
 from models.llm.llm_factory import llm_factory
 from vector_store.chroma import ChromaVectorStore
 from tools.vector_store_retriever import build_retriever_tool
 from tools.weather import get_weather
+from tools.newssearch import build_newssearch_tool
 from tools.conditions.redirect import redirect_condition
 from agents.generate.generate import GenerateAgent
 
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import SystemMessage, AIMessage
 from langchain_huggingface import ChatHuggingFace
 from langgraph.graph import MessagesState, StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -58,8 +61,10 @@ class ChatBot:
         graph_builder = StateGraph(MessagesState)
 
         # tools
-        vectorstore_retriever_tool = build_retriever_tool(self.vector_store.get_retriever())
-        tools = [get_weather, vectorstore_retriever_tool]
+        newssearch_tool = build_newssearch_tool()
+        # vectorstore_retriever_tool = build_retriever_tool(self.vector_store.get_retriever())
+        # tools = [get_weather, vectorstore_retriever_tool]
+        tools = [get_weather, newssearch_tool]
         tool_node = ToolNode(tools=tools)
         self.bind_tools(tools)
 
@@ -68,11 +73,14 @@ class ChatBot:
 
         graph_builder.add_node("chatbot", self.invoke_model)
         graph_builder.add_node("tools", tool_node)
-        graph_builder.add_node("generate", generate_agent())
+        graph_builder.add_node("generate", generate_agent)
         
         graph_builder.set_entry_point("chatbot")
-        graph_builder.add_conditional_edges("chatbot", tools_condition, {"tools": "tools", END: END})
-        graph_builder.add_conditional_edges("tools", redirect_condition)
+        graph_builder.add_conditional_edges("chatbot", tools_condition)
+        # graph_builder.add_edge("tools", "chatbot")
+        # graph_builder.add_conditional_edges("chatbot", tools_condition, {"tools": "tools", END: END})
+        # graph_builder.add_conditional_edges("tools", redirect_condition)
+        graph_builder.add_edge("tools", "generate")
         graph_builder.add_edge("generate", END)
 
         self.graph = graph_builder.compile(checkpointer=memory)
@@ -86,8 +94,17 @@ class ChatBot:
 
     def invoke_model(self, state: MessagesState):
         """Model invoke function"""
+        print("------------Invoke Model------------------")
+        print(state["messages"])
+
         messages = [SystemMessage(self.sys_prompt)] + state["messages"]
-        return {"messages": [self.model.invoke(messages)]}
+        output = {"messages": [self.model.invoke(messages)]}
+        if output["messages"][-1].content.startswith('<tool_call>'):
+            contents = output["messages"][-1].content.replace('<tool_call>\n', '').replace('\n</tool_call>', '')
+            contents = json.loads(contents)
+            output = {"messages": [AIMessage(content="", tool_calls=[{"name": content["name"], "args": content["arguments"], "type": "tool_call", "id": str(uuid.uuid4())} for content in contents])]}
+
+        return output
 
     def __call__(self):
         return self.graph
