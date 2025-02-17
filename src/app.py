@@ -31,6 +31,7 @@ def stream_chat_graph_updates(chat_history: list):
     """Update assistant chat here"""
     for event in chatbot().stream({"messages": [("user", chat_history[-1]["content"])]}, config, stream_mode="updates"):
     # for event in chatbot().stream({"messages": [("user", chat_history[-1]["content"])]}, config, stream_mode="values"):
+        print("-----------event----------------")
         print(event)
 
         if "tools" in event:
