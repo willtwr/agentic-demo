@@ -1,6 +1,7 @@
 import requests
 from duckduckgo_search import DDGS
 from bs4 import BeautifulSoup
+from readability import Document
 from langchain.tools import tool
 from langchain_community.tools import DuckDuckGoSearchResults
 
@@ -19,5 +20,8 @@ def news_search(query: str) -> str:
         response = requests.get(result['url'])
         soup = BeautifulSoup(response.content, 'html.parser')
         output.append(result['title'] + "\n" + soup.get_text().strip() + "\n")
+
+        # doc = Document(response.content)
+        # output.append(result['title'] + "\n" + doc.summary().strip() + "\n")
 
     return '\n'.join(output)

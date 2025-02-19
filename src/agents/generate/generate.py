@@ -1,8 +1,10 @@
+import os
 from models.llm.llm_factory import llm_factory
 
-from langchain import hub
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import ChatHuggingFace
 
@@ -21,7 +23,20 @@ class GenerateAgent:
             self.model = model
 
         # Prompt
-        self.prompt = hub.pull("rlm/rag-prompt")
+        sysprompt_path = "./src/agents/generate/system_prompt_summarize.txt"
+        if os.path.exists(sysprompt_path):
+            with open(sysprompt_path, "r") as f:
+                self.prompt = ChatPromptTemplate(
+                    input_variables=['context', 'question'], 
+                    messages=[
+                        HumanMessagePromptTemplate(
+                            prompt=PromptTemplate(
+                                input_variables=['context', 'question'], 
+                                template=f.read()
+                            )
+                        )
+                    ]
+                )
 
     def build_model(self) -> None:
         """Build the LLM model"""

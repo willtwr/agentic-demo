@@ -61,7 +61,7 @@ class ChatBot:
         graph_builder = StateGraph(MessagesState)
 
         # tools
-        newssearch_tool = build_newssearch_tool()
+        # newssearch_tool = build_newssearch_tool()
         # vectorstore_retriever_tool = build_retriever_tool(self.vector_store.get_retriever())
         # tools = [get_weather, vectorstore_retriever_tool]
         # tools = [get_weather, newssearch_tool]
